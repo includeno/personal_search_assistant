@@ -71,7 +71,7 @@ chrome.runtime.onMessage.addListener((request,sender,sendResponse)=>{
 });
 
 //监听临时列表temp
-chrome.runtime.onMessage.addListener((request,sender,sendResponse)=>{
+chrome.runtime.onMessage.addListener( (request,sender,sendResponse)=>{
 
     if(request.message=="temp_insert"){
         let record=insert_record(tempTableName,{
@@ -93,11 +93,9 @@ chrome.runtime.onMessage.addListener((request,sender,sendResponse)=>{
         let records=select_all_records(tempTableName);
 
         records.then(res=>{
-            chrome.runtime.sendMessage({
-                message:"temp_select_all_success",
-                recordlist:res,
-            });
             sendResponse(res);
+            console.log("select_all_records sendResponse!"+res.length);
+
         })
     }
     else if(request.message=="temp_select"){
@@ -144,6 +142,8 @@ chrome.runtime.onMessage.addListener((request,sender,sendResponse)=>{
             sendResponse(res);
         })
     }
+
+    return true;
 })
 
 
@@ -268,6 +268,9 @@ function select_all_records(tableName) {
             }
             let request = objectStore.getAll();
             request.onsuccess = function (event) {
+                let result=event.target.result;
+                console.log("result:"+result);
+                console.log("result.length:"+result.length);
                 resolve(event.target.result);
             }
         });

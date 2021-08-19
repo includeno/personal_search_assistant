@@ -39,7 +39,6 @@
 </template>
 
 <script>
-
 export default {
   name: 'Popup',
   data() {
@@ -63,17 +62,21 @@ export default {
     }
   },
   methods: {
+    //messaging https://developer.chrome.com/docs/extensions/mv3/messaging/
+    //传递this的方法 https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/Arrow_functions
     async select_all(){
-      await chrome.runtime.sendMessage({
+      var that = this;
+      let response2=await chrome.runtime.sendMessage({
         message:"temp_select_all",
-      },response=>{
-        //此处必须使用箭头函数
-        this.templist=[];
-        // setTimeout(function (){
-        //
-        // },10);
-        for (let i = 0; i < response.length; i++) {
-          this.templist.push({url:response[i].url,time:response[i].time});
+      },function (response){
+        that.templist=[];
+        if(response!=null){
+          for (let i = 0; i < response.length; i++) {
+            that.templist.push({url:response[i].url,time:response[i].time});
+          }
+        }
+        else{
+          console.log("response  null!");
         }
 
       });

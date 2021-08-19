@@ -105,7 +105,7 @@ function addListenerOfTag() {
 }
 window.onload = function () {
     box = document.createElement('div');
-    box.innerHTML = '<p draggable="true" id="dragtarget" color="green">拖动改变位置</p>';
+    box.innerHTML = '<p draggable="true" id="dragtarget" color="green">🐵</p>';
     box.id = 'mybox';
 
     box.draggable = "true";
