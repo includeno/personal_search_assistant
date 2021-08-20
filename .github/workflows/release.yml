@@ -23,9 +23,9 @@ jobs:
       - run: npm run build
       - name: Sets build date
         run: echo "BUILD_DATE=$(date '+%Y%m%d')" >> $GITHUB_ENV
-      - name: Get Version From Package.js
-        run: grep '"version":.*' abcd.md | grep '[0-9].*[0-9].*[0-9]' | sed 's/"version"//g' | sed 's/^.*://g' | sed 's/",.*$//g' | sed 's/"//g' | sed 's/://g' | sed 's/ //g' | sed '1i \
-STATE_RELEASE_VERSION='  > Version.log
+      - name: Get Version From package.json
+        run: grep '"version":.*' package.json | grep '[0-9].*[0-9].*[0-9]' | sed 's/"version"//g' | sed 's/^.*://g' | sed 's/",.*$//g' | sed 's/"//g' | sed 's/://g' | sed 's/ //g' | sed '1i \
+STATE_RELEASE_VERSION=' > Version.log
       - name: From Version.log to GITHUB_ENV
         run: tail ./Version.log >> $GITHUB_ENV
       - name: Show Files
