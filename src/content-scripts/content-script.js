@@ -5,27 +5,12 @@ let floatTitleValid=""
 let floatTitleInValid=""
 let autoCleaningTempTable=""
 
-function checkNotification() {
-    if (!("Notification" in window)) {
-        alert("This browser does not support desktop notification");
-    }
-        // check whether notification permissions have alredy been granted
-    // Otherwise, ask the user for permission
-    else if (Notification.permission !== 'denied') {
-        Notification.requestPermission(function (permission) {
-            // If the user accepts, let's create a notification
-            if (permission === "granted") {
-                //new Notification("Request granted!");
-            }
-        });
-    }
-}
-
 //每当开启新网页时候就发送给后台当前网页的地址
 chrome.runtime.sendMessage({
     message:"check_url",
     url:window.location.href
 });
+//从后台脚本读取数据库内的配置信息
 async function config_read(){
     let config_read=await chrome.runtime.sendMessage({
         message:"config_read",
@@ -62,8 +47,6 @@ const bingdingkey = '192'
 //测试案例2 百度收藏夹 通过
 //测试案例3 百度搜索结果 通过
 function tag_a_event_over(event) {
-    //console.log('element=', event);
-
     if (event.srcElement != null && 'href' in event.srcElement) {
         currentelement = event.srcElement.href;
     }
@@ -77,7 +60,6 @@ function tag_a_event_over(event) {
         currentelement = event.target.parentElement.href;
     }
     else {
-        //未找到
         console.log('未找到');
     }
     if (currentelement == null) {
@@ -101,11 +83,8 @@ function tag_a_event_over(event) {
             else{
                 currentelement = currentelement.replace(" ", "");
             }
-
         }
-
     }
-
 }
 
 function tag_a_event_out(event) {
@@ -137,17 +116,13 @@ window.onload =async function () {
     //取消默认拖动限制
     box.addEventListener('dragover', function (event) {
         event.preventDefault();
-        //console.log("dragover "+event.screenY);
     });
 
     box.addEventListener('drag', function (event) {
 
-        //console.log("drag "+event.screenY);
     });
 
     box.addEventListener('dragstart', function (event) {
-
-        //console.log("dragstart "+event.screenY);
     });
 
     box.addEventListener('dragend', function (event) {
@@ -169,7 +144,7 @@ window.onload =async function () {
             box.style.right = '';
             box.style.zIndex = '100000';
             box.style.position = 'fixed';
-            //box.style.color = "red";
+
         }
         box.style.top = event.clientY + 'px';
     });
@@ -179,18 +154,13 @@ window.onload =async function () {
     document.onkeyup = function (event) {
         var key = event.which;
         //console.log("onkeyup Key: " + String.fromCharCode(key) + "\nCharacter code: " + String(key) + " ");
-        if (currentelement == null) {
-            //
-            let a=1;
-            a=2;
-        }
-        else if (key == bingdingkey && currentelement != '' && (currentelement.startsWith("http") || currentelement.startsWith("https"))) {
+        if (key == bingdingkey && currentelement != '' && (currentelement.startsWith("http") || currentelement.startsWith("https"))) {
 
             chrome.runtime.sendMessage({
                 message:"temp_insert",
                 url:currentelement,
             }, (response) => {
-                // 3. Got an asynchronous response with the data from the background
+                //Got an asynchronous response with the data from the background
                 console.log('收到', response);
 
             });

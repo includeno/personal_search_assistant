@@ -214,16 +214,13 @@ function create_database() {
         db = event.target.result;
         console.log("DB OPENED.");
         //初始化 默认配置
-        let data=select_record(configTableName,"config");
-        if(data==null){
-            update_record(configTableName,{
-                name:"config",
-                showFloatTitle:"1",
-                floatTitleValid:"🐵",
-                floatTitleInValid:"🙈",
-                autoCleaningTempTable:"1",
-            });
-        }
+        insert_record(configTableName,{
+            name:"config",
+            showFloatTitle:"1",
+            floatTitleValid:"🐵",
+            floatTitleInValid:"🙈",
+            autoCleaningTempTable:"1",
+        });
 
         db.onerror = function (event) {
             console.log("FAILED TO OPEN DB.")
@@ -233,7 +230,6 @@ function create_database() {
 
 function insert_record(tableName,record) {
     if (db) {
-        console.log(db);
         const insert_transaction = db.transaction(tableName,"readwrite");
         const objectStore = insert_transaction.objectStore(tableName);
         return new Promise((resolve, reject) => {
@@ -275,7 +271,6 @@ function insert_record(tableName,record) {
             }
             let request = objectStore.add(record);
             request.onsuccess = function () {
-                //console.log("Added: ", record);
             }
 
         });
@@ -368,7 +363,6 @@ function delete_all_records(tableName) {
             let request = await select_all_records(tableName);
             console.log("ALL DELETE RECORDS TRANSACTIONS COMPLETE.");
             for (let i = 0; i < request.length; i++) {
-                console.log("request[i]:" + request[i]);
                 await delete_record(tableName, request[i].url);
             }
             resolve(true);
