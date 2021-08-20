@@ -1,8 +1,8 @@
 <template>
   <div>
     <div>
-      <h3>今天的临时列表/Today's temporary URL list
-        <button v-on:click="deletetemplist">清空列表/Clear Table</button>
+      <h3>{{title}}
+        <button v-on:click="deletetemplist">{{clearButton}}</button>
       </h3>
 
       <br>
@@ -11,8 +11,8 @@
 
         <table v-bind:style="{width : 600+'px' }"  align="left">
           <tr>
-            <td v-bind:style="{width : 150+'px' }">时间/Time UTF</td>
-            <td v-bind:style="{width : 400+'px' }">链接/URL</td>
+            <td v-bind:style="{width : 150+'px' }">{{time}}</td>
+            <td v-bind:style="{width : 400+'px' }">{{link}}</td>
           </tr>
 
           <tr v-for="(item, index) in tempList" :key="index">
@@ -54,6 +54,20 @@ export default {
     this.select_all();
   },
   computed: {
+    title () {
+      return browser.i18n.getMessage('popupTitle');
+    },
+    clearButton () {
+      return browser.i18n.getMessage('popupclearButton');
+    },
+    time(){
+      return browser.i18n.getMessage('time');
+    },
+    link(){
+      return browser.i18n.getMessage('link');
+    },
+
+
     defaultText () {
       return browser.i18n.getMessage('extName')
     },

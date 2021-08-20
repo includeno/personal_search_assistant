@@ -209,7 +209,14 @@ function create_database() {
     request.onsuccess = function (event) {
         db = event.target.result;
         console.log("DB OPENED.");
-        //初始化
+        //初始化 默认配置
+        update_record(configTableName,{
+            name:"config",
+            showFloatTitle:"1",
+            floatTitleValid:"🐵",
+            floatTitleInValid:"🙈",
+            autoCleaningTempTable:"1",
+        });
         db.onerror = function (event) {
             console.log("FAILED TO OPEN DB.")
         }
@@ -244,11 +251,13 @@ function insert_record(tableName,record) {
             }
             insert_transaction.onerror = function () {
                 console.log("PROBLEM INSERTING RECORDS.")
-                new Notification(
-                    "消息", {
-                        body: "链接已存在，无法添加",
-                        icon: 'http://images0.cnblogs.com/news_topic/firefox.gif',
-                    });
+                if(tableName===urlTableName||tableName===tempTableName) {
+                    new Notification(
+                        "消息", {
+                            body: "链接已存在，无法添加",
+                            icon: 'http://images0.cnblogs.com/news_topic/firefox.gif',
+                        });
+                }
                 resolve(false);
             }
             let request = objectStore.add(record);

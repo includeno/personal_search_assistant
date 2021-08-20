@@ -4,31 +4,31 @@
       <br>
 
       <tr class="table_tr_style">
-        <a-label>Show Float Title On Tabs </a-label>
+        <a-label>{{optionsTitleShowFloatTitle}}</a-label>
         <a-input v-model="showFloatTitle" style="width: 300px"></a-input>
         <a-button type="primary" v-on:click="init_showFloatTitle()">
-          Reset
+          {{optionsResetButton}}
         </a-button>
       </tr>
       <br>
       <tr class="table_tr_style">
-        <a-label>Float Title When The Mouse Aims To Links </a-label>
+        <a-label>{{optionsTitleFloatTitleValid}}</a-label>
         <a-input v-model="floatTitleValid" style="width: 300px"></a-input>
         <a-button type="primary" v-on:click="init_floatTitleValid()">
-          Reset
+          {{optionsResetButton}}
         </a-button>
       </tr>
       <br>
       <tr class="table_tr_style">
-        <a-label>Float Title When The Mouse Doesn't Aim To Links </a-label>
+        <a-label>{{optionsTitleFloatTitleInValid}}</a-label>
         <a-input v-model="floatTitleInValid" style="width: 300px"></a-input>
         <a-button type="primary" v-on:click="init_floatTitleInValid()">
-          Reset
+          {{optionsResetButton}}
         </a-button>
       </tr>
       <br>
-      <tr>
-      <a-label>Auto Clean Previous Records When Starting A New Day </a-label>
+      <tr class="table_tr_style">
+      <a-label>{{optionsTitleAutoCleaningTempTable}}</a-label>
       <a-select v-model="autoCleaningTempTable" style="width: 300px">
         <a-select-option value="1" selected>
           开/On
@@ -38,7 +38,7 @@
         </a-select-option>
       </a-select>
       <a-button type="primary" v-on:click="init_autoCleaningTempTable()">
-        Reset
+        {{optionsResetButton}}
       </a-button>
       </tr>
 
@@ -46,11 +46,11 @@
 
       <tr>
         <a-button type="primary" v-on:click="init()">
-          Reset All
+          {{optionsResetAllButton}}
         </a-button>
         &nbsp;
         <a-button type="primary" v-on:click="config_write()">
-          Confirm
+          {{optionsConfirmButton}}
         </a-button>
       </tr>
     </table>
@@ -68,6 +68,29 @@ export default {
       floatTitleValid:"",//浮动图标内文字 开
       floatTitleInValid:"",//浮动图标内文字 关
       autoCleaningTempTable:"",//自动清理前一天的临时列表内容
+    }
+  },
+  computed:{
+    optionsTitleShowFloatTitle(){
+      return browser.i18n.getMessage('optionsTitleShowFloatTitle');
+    },
+    optionsTitleFloatTitleValid(){
+      return browser.i18n.getMessage('optionsTitleFloatTitleValid');
+    },
+    optionsTitleFloatTitleInValid(){
+      return browser.i18n.getMessage('optionsTitleFloatTitleInValid');
+    },
+    optionsTitleAutoCleaningTempTable(){
+      return browser.i18n.getMessage('optionsTitleAutoCleaningTempTable');
+    },
+    optionsResetButton(){
+      return browser.i18n.getMessage('optionsResetButton');
+    },
+    optionsConfirmButton(){
+      return browser.i18n.getMessage('optionsConfirmButton');
+    },
+    optionsResetAllButton(){
+      return browser.i18n.getMessage('optionsResetAllButton');
     }
   },
   mounted() {

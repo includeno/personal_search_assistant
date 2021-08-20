@@ -1,50 +1,50 @@
 {
   "extName": {
-    "message": "personal_search_assistant",
+    "message": "个人搜索助手",
     "description": ""
   },
   "popupTitle": {
-    "message": "Today's temporary URL table",
+    "message": "今天的临时列表",
     "description": ""
   },
   "popupclearButton": {
-    "message": "Clear temporary table",
+    "message": "清空",
     "description": ""
   },
   "time": {
-    "message": "Time",
+    "message": "时间",
     "description": ""
   },
   "link": {
-    "message": "Link",
+    "message": "链接",
     "description": ""
   },
   "optionsTitleShowFloatTitle": {
-    "message": "Show Float Title On Tabs ",
+    "message": "网页中显示游标 ",
     "description": ""
   },
   "optionsTitleFloatTitleValid": {
-    "message": "Float Title When The Mouse Aims To Links ",
+    "message": "当鼠标指向链接时网页中游标 ",
     "description": ""
   },
   "optionsTitleFloatTitleInValid": {
-    "message": "Float Title When The Mouse Doesn't Aim To Links ",
+    "message": "当鼠标不指向链接时网页中游标 ",
     "description": ""
   },
   "optionsTitleAutoCleaningTempTable": {
-    "message": "Auto Clean Previous Records When Starting A New Day ",
+    "message": "每天自动清理临时列表 ",
     "description": ""
   },
   "optionsResetButton": {
-    "message": "Reset",
+    "message": "重置",
     "description": ""
   },
   "optionsConfirmButton": {
-    "message": "Confirm",
+    "message": "更新",
     "description": ""
   },
   "optionsResetAllButton": {
-    "message": "Reset All",
+    "message": "重置全部",
     "description": ""
   }
 }
