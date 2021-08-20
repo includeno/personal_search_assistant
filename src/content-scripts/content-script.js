@@ -1,4 +1,4 @@
-console.log('Hello from the content-script')
+
 let box = null;//定义注入的控件
 let showFloatTitle=""
 let floatTitleValid=""
@@ -25,8 +25,8 @@ async function config_read(){
     });
 }
 
+//鼠标移动到a标签时候标志的显示情况设置
 function elementpos(event) {
-    console.log(config_read!=null);
     var dragtarget = document.getElementById('dragtarget');
     if (dragtarget != null&&showFloatTitle=="1") {
         if (currentelement != null && currentelement != '') {
@@ -35,9 +35,7 @@ function elementpos(event) {
         else {
             dragtarget.innerHTML=floatTitleInValid;
         }
-
     }
-
 }
 
 var currentelement = null;
@@ -161,7 +159,6 @@ window.onload =async function () {
                 url:currentelement,
             }, (response) => {
                 //Got an asynchronous response with the data from the background
-                console.log('收到', response);
 
             });
         }

@@ -44,11 +44,11 @@
     "description": ""
   },
   "optionsResetAllButton": {
-    "message": "重置全部",
+    "message": "重置全部并应用",
     "description": ""
   },
   "addToTempTableKey": {
-    "message": "添加网页内链接 快捷键:~",
+    "message": "添加网页内链接 快捷键:~ 可以对网页内游标进行拖动，使其固定在网页左边或者右边",
     "description": ""
   },
 

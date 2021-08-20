@@ -11,14 +11,12 @@ function show_message_from_locales(key){
     return browser.i18n.getMessage(key);
 }
 
+//网页状态判断与配置读取
 chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
     //监听打开新网页时候 网页的状态
     if (request.message == "check_url") {
         let record =await select_record(urlTableName,request.url);
-        if(record==null){
-            console.log("无记录/No record");
-        }
-        else {
+        if(record!=null){
             new Notification(
                 show_message_from_locales('messageLevelAttention'), {
                     body: show_message_from_locales('notificationExistInURLTable'),
@@ -35,9 +33,6 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
             autoCleaningTempTable:request.autoCleaningTempTable,
         });
         sendResponse(config);
-        if(config==null){
-            console.log("无config记录");
-        }
     }
     else if (request.message == "config_read") {
         let config =await select_record(configTableName,request.name);
@@ -45,7 +40,7 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
     }
 });
 
-//监听url列表
+//监听url列表 URL Table
 chrome.runtime.onMessage.addListener((request,sender,sendResponse)=>{
 
     if(request.message=="url_insert"){
@@ -90,7 +85,7 @@ chrome.runtime.onMessage.addListener((request,sender,sendResponse)=>{
     }
 });
 
-//监听临时列表temp
+//监听临时列表 Temporary Table
 chrome.runtime.onMessage.addListener( (request,sender,sendResponse)=>{
 
     if(request.message=="temp_insert"){
@@ -165,7 +160,6 @@ chrome.runtime.onMessage.addListener( (request,sender,sendResponse)=>{
 
     return true;
 })
-
 
 // background.js
 var db = null;
@@ -272,7 +266,6 @@ function insert_record(tableName,record) {
             let request = objectStore.add(record);
             request.onsuccess = function () {
             }
-
         });
     }
 }
@@ -345,7 +338,6 @@ function delete_record(tableName,url) {
                             icon: 'http://images0.cnblogs.com/news_topic/firefox.gif',
                         });
                 }
-
                 resolve(true);
             }
             delete_transaction.onerror = function () {
@@ -388,12 +380,10 @@ function readAll(tableName) {
             return data;
         }
     };
-
 }
 create_database();
 
 function setUpContextMenus() {
-
     chrome.contextMenus.create({
         title: show_message_from_locales("contextMenusAddingToURLTable"),
         id: "add",
@@ -405,8 +395,6 @@ function setUpContextMenus() {
                 url:tab.url,
                 time:get_now_time()
             });
-
-
         }
     });
     chrome.contextMenus.create({
@@ -417,7 +405,6 @@ function setUpContextMenus() {
         onclick: async function (info, tab) {
             // 注意不能使用location.href，因为location是属于background的window对象
             let response = await delete_record(urlTableName, tab.url);
-
         }
     });
 
@@ -428,15 +415,12 @@ function setUpContextMenus() {
         contexts: ['page'],
         onclick: async function (info, tab) {
             // 注意不能使用location.href，因为location是属于background的window对象
-
             let response = await insert_record(tempTableName, {
                 url: tab.url,
                 time: get_now_time()
             });
-
         }
     });
-
 }
 //每次都自动加载右键菜单
 setUpContextMenus();

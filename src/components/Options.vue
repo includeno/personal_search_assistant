@@ -5,7 +5,14 @@
 
       <tr class="table_tr_style">
         <a-label>{{optionsTitleShowFloatTitle}}</a-label>
-        <a-input v-model="showFloatTitle" style="width: 300px"></a-input>
+        <a-select v-model="showFloatTitle" style="width: 300px">
+          <a-select-option value="1" selected>
+            开/On
+          </a-select-option>
+          <a-select-option value="0">
+            关/Off
+          </a-select-option>
+        </a-select>
         <a-button type="primary" v-on:click="init_showFloatTitle()">
           {{optionsResetButton}}
         </a-button>
@@ -17,7 +24,9 @@
         <a-button type="primary" v-on:click="init_floatTitleValid()">
           {{optionsResetButton}}
         </a-button>
+
       </tr>
+      <tr>{{exampleFloatTitleValid}}</tr>
       <br>
       <tr class="table_tr_style">
         <a-label>{{optionsTitleFloatTitleInValid}}</a-label>
@@ -25,7 +34,9 @@
         <a-button type="primary" v-on:click="init_floatTitleInValid()">
           {{optionsResetButton}}
         </a-button>
+
       </tr>
+      <tr>{{exampleFloatTitleValid}}</tr>
       <br>
       <tr class="table_tr_style">
       <a-label>{{optionsTitleAutoCleaningTempTable}}</a-label>
@@ -72,6 +83,8 @@ export default {
       floatTitleValid:"",//浮动图标内文字 开
       floatTitleInValid:"",//浮动图标内文字 关
       autoCleaningTempTable:"",//自动清理前一天的临时列表内容
+
+      exampleFloatTitleValid:`Example:<h1>🐵</h1>,🐵 and so on`
     }
   },
   computed:{

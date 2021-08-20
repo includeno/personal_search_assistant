@@ -8,7 +8,6 @@
       <br>
 
       <div ref="hello" id="requestform">
-
         <table v-bind:style="{width : 600+'px' }"  align="left">
           <tr>
             <td v-bind:style="{width : 150+'px' }">{{time}}</td>
@@ -26,9 +25,6 @@
               <button v-on:click="deletetemplistitem(index)">删除记录</button>
             </td>
             <!-- 多选框参考 https://www.cnblogs.com/li-sir/p/11445559.html -->
-            <td>
-
-            </td>
 
           </tr>
         </table>
@@ -49,8 +45,6 @@ export default {
   },
   mounted () {
     this.templist=[];
-
-    console.log("mounted");
     this.select_all();
   },
   computed: {

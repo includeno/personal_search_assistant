@@ -44,11 +44,11 @@
     "description": ""
   },
   "optionsResetAllButton": {
-    "message": "Reset All",
+    "message": "Reset All & Apply",
     "description": ""
   },
   "addToTempTableKey": {
-    "message": "Key of adding URL to Temporary Table :~",
+    "message": "Key of adding Link to Temporary Table :~  You can also drag the Float Title to both sides of tab",
     "description": ""
   },
 
