@@ -1,14 +1,14 @@
 {
   "extName": {
-    "message": "personal_search_assistant",
+    "message": "Personal Search Assistant",
     "description": ""
   },
   "popupTitle": {
-    "message": "Today's temporary URL table",
+    "message": "Today's Temporary Table",
     "description": ""
   },
   "popupclearButton": {
-    "message": "Clear temporary table",
+    "message": "Clear Temporary Table",
     "description": ""
   },
   "time": {
@@ -32,7 +32,7 @@
     "description": ""
   },
   "optionsTitleAutoCleaningTempTable": {
-    "message": "Auto Clean Previous Records When Starting A New Day ",
+    "message": "Auto Clean Previous Records In Temporary Table When Starting A New Day ",
     "description": ""
   },
   "optionsResetButton": {
@@ -40,11 +40,69 @@
     "description": ""
   },
   "optionsConfirmButton": {
-    "message": "Confirm",
+    "message": "Apply",
     "description": ""
   },
   "optionsResetAllButton": {
     "message": "Reset All",
     "description": ""
+  },
+  "addToTempTableKey": {
+    "message": "Key of adding URL to Temporary Table :~",
+    "description": ""
+  },
+
+  "notificationExistInURLTable": {
+    "message": "Link exists in URL Table!",
+    "description": ""
+  },
+  "notificationAddingToURLTableSucceed": {
+    "message": "Adding Link Succeed!(URL Table)",
+    "description": ""
+  },
+  "notificationRemovingFromURLTableSucceed": {
+    "message": "Removing Link Succeed!(URL Table)",
+    "description": ""
+  },
+
+  "notificationExistInTempTable": {
+    "message": "Link exists in Temporary Table!",
+    "description": ""
+  },
+  "notificationAddingToTempTableSucceed": {
+    "message": "Adding Link Succeed!(Temporary Table)",
+    "description": ""
+  },
+  "notificationRemovingFromTempTableSucceed": {
+    "message": "Removing Link Succeed!(Temporary Table)",
+    "description": ""
+  },
+
+  "notificationConfigTableUpdateSucceed": {
+    "message": "Config Updated Successfully",
+    "description": ""
+  },
+
+  "messageLevelAttention": {
+    "message": "Attention",
+    "description": ""
+  },
+  "messageLevelInfo": {
+    "message": "Info",
+    "description": ""
+  },
+
+  "contextMenusAddingToURLTable": {
+    "message": "Adding To URL Table(Forbidden)",
+    "description": ""
+  },
+  "contextMenusRemoveFromURLTable": {
+    "message": "Remove From URL Table(Recover)",
+    "description": ""
+  },
+  "contextMenusAddingToTempTable": {
+    "message": "Adding To Temporary Table",
+    "description": ""
   }
+
 }

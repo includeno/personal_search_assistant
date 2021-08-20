@@ -40,11 +40,69 @@
     "description": ""
   },
   "optionsConfirmButton": {
-    "message": "更新",
+    "message": "应用",
     "description": ""
   },
   "optionsResetAllButton": {
     "message": "重置全部",
+    "description": ""
+  },
+  "addToTempTableKey": {
+    "message": "添加网页内链接 快捷键:~",
+    "description": ""
+  },
+
+
+  "notificationExistInURLTable": {
+    "message": "链接已无效",
+    "description": ""
+  },
+  "notificationAddingToURLTableSucceed": {
+    "message": "链接无效成功",
+    "description": ""
+  },
+  "notificationRemovingFromURLTableSucceed": {
+    "message": "链接取消无效成功",
+    "description": ""
+  },
+
+  "notificationExistInTempTable": {
+    "message": "链接已存在于临时列表",
+    "description": ""
+  },
+  "notificationAddingToTempTableSucceed": {
+    "message": "临时列表中添加链接成功",
+    "description": ""
+  },
+  "notificationRemovingFromTempTableSucceed": {
+    "message": "临时列表中删除链接成功",
+    "description": ""
+  },
+
+  "notificationConfigTableUpdateSucceed": {
+    "message": "配置更新成功",
+    "description": ""
+  },
+
+  "messageLevelAttention": {
+    "message": "注意",
+    "description": ""
+  },
+  "messageLevelInfo": {
+    "message": "信息",
+    "description": ""
+  },
+
+  "contextMenusAddingToURLTable": {
+    "message": "添加此网页 URL列表(无效网页)",
+    "description": ""
+  },
+  "contextMenusRemoveFromURLTable": {
+    "message": "删除此网页 URL列表(恢复网页)",
+    "description": ""
+  },
+  "contextMenusAddingToTempTable": {
+    "message": "添加此网页 临时列表",
     "description": ""
   }
 }

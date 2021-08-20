@@ -7,17 +7,21 @@ function get_now_time() {
     return y + "-" + (m < 10 ? "0" + m : m) + "-" + (d < 10 ? "0" + d : d) + " " + now.toTimeString().substr(0, 8);
 }
 
+function show_message_from_locales(key){
+    return browser.i18n.getMessage(key);
+}
+
 chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
     //监听打开新网页时候 网页的状态
     if (request.message == "check_url") {
         let record =await select_record(urlTableName,request.url);
         if(record==null){
-            console.log("无记录");
+            console.log("无记录/No record");
         }
         else {
             new Notification(
-                "消息", {
-                    body: "当前网页无效",
+                show_message_from_locales('messageLevelAttention'), {
+                    body: show_message_from_locales('notificationExistInURLTable'),
                     icon: 'http://images0.cnblogs.com/news_topic/firefox.gif',
                 });
         }
@@ -210,13 +214,17 @@ function create_database() {
         db = event.target.result;
         console.log("DB OPENED.");
         //初始化 默认配置
-        update_record(configTableName,{
-            name:"config",
-            showFloatTitle:"1",
-            floatTitleValid:"🐵",
-            floatTitleInValid:"🙈",
-            autoCleaningTempTable:"1",
-        });
+        let data=select_record(configTableName,"config");
+        if(data==null){
+            update_record(configTableName,{
+                name:"config",
+                showFloatTitle:"1",
+                floatTitleValid:"🐵",
+                floatTitleInValid:"🙈",
+                autoCleaningTempTable:"1",
+            });
+        }
+
         db.onerror = function (event) {
             console.log("FAILED TO OPEN DB.")
         }
@@ -233,28 +241,33 @@ function insert_record(tableName,record) {
                 console.log("ALL INSERT TRANSACTIONS COMPLETE.");
                 if(tableName===urlTableName){
                     new Notification(
-                        "消息", {
-                            body: "链接无效成功",
+                        show_message_from_locales('messageLevelInfo'), {
+                            body: show_message_from_locales('notificationAddingToURLTableSucceed'),
                             icon: 'http://images0.cnblogs.com/news_topic/firefox.gif',
                         });
                 }
                 if(tableName===tempTableName){
                     new Notification(
-                        "消息", {
-                            body: "临时列表添加成功",
+                        show_message_from_locales('messageLevelInfo'), {
+                            body: show_message_from_locales('notificationAddingToTempTableSucceed'),
                             icon: 'http://images0.cnblogs.com/news_topic/firefox.gif',
                         });
                 }
-
-
                 resolve(true);
             }
             insert_transaction.onerror = function () {
                 console.log("PROBLEM INSERTING RECORDS.")
-                if(tableName===urlTableName||tableName===tempTableName) {
+                if(tableName===urlTableName) {
                     new Notification(
-                        "消息", {
-                            body: "链接已存在，无法添加",
+                        show_message_from_locales('messageLevelAttention'), {
+                            body: show_message_from_locales('notificationExistInURLTable'),
+                            icon: 'http://images0.cnblogs.com/news_topic/firefox.gif',
+                        });
+                }
+                if(tableName===tempTableName){
+                    new Notification(
+                        show_message_from_locales('messageLevelAttention'), {
+                            body: show_message_from_locales('notificationExistInTempTable'),
                             icon: 'http://images0.cnblogs.com/news_topic/firefox.gif',
                         });
                 }
@@ -262,7 +275,7 @@ function insert_record(tableName,record) {
             }
             let request = objectStore.add(record);
             request.onsuccess = function () {
-                console.log("Added: ", record);
+                //console.log("Added: ", record);
             }
 
         });
@@ -282,8 +295,6 @@ function select_record(tableName,record) {
             }
             let request = objectStore.get(record);
             request.onsuccess = function (event) {
-
-                console.log("select_record event.target.result:"+JSON.stringify(event.target.result));
                 resolve(event.target.result);
             }
         });
@@ -302,9 +313,6 @@ function select_all_records(tableName) {
             }
             let request = objectStore.getAll();
             request.onsuccess = function (event) {
-                let result=event.target.result;
-                console.log("result:"+result);
-                console.log("result.length:"+result.length);
                 resolve(event.target.result);
             }
         });
@@ -337,8 +345,8 @@ function delete_record(tableName,url) {
                 console.log("ALL DELETE TRANSACTIONS COMPLETE.");
                 if(tableName===urlTableName){
                     new Notification(
-                        "消息", {
-                            body: "链接解除无效成功",
+                        show_message_from_locales('messageLevelInfo'), {
+                            body: show_message_from_locales('notificationRemovingFromURLTableSucceed'),
                             icon: 'http://images0.cnblogs.com/news_topic/firefox.gif',
                         });
                 }
@@ -347,11 +355,6 @@ function delete_record(tableName,url) {
             }
             delete_transaction.onerror = function () {
                 console.log("PROBLEM DELETE RECORDS.")
-                new Notification(
-                    "消息", {
-                        body: "链接解除无效失败 不存在此链接",
-                        icon: 'http://images0.cnblogs.com/news_topic/firefox.gif',
-                    });
                 resolve(false);
             }
             objectStore.delete(url);
@@ -381,9 +384,9 @@ function readAll(tableName) {
         let cursor = event.target.result;
         let data=[];
         if (cursor) {
-            console.log('cursor: ' + JSON.stringify(cursor.value));
-            console.log('URL: ' + cursor.value.url);
-            console.log('Time: ' + cursor.value.time);
+            // console.log('cursor: ' + JSON.stringify(cursor.value));
+            // console.log('URL: ' + cursor.value.url);
+            // console.log('Time: ' + cursor.value.time);
             data.push(cursor.value);
             cursor.continue();
         } else {
@@ -398,7 +401,7 @@ create_database();
 function setUpContextMenus() {
 
     chrome.contextMenus.create({
-        title: "添加",
+        title: show_message_from_locales("contextMenusAddingToURLTable"),
         id: "add",
         documentUrlPatterns: ["http://*/*", "https://*/*"],
         contexts: ['page'],
@@ -413,7 +416,7 @@ function setUpContextMenus() {
         }
     });
     chrome.contextMenus.create({
-        title: "删除",
+        title: show_message_from_locales("contextMenusRemoveFromURLTable"),
         id: "delete",
         documentUrlPatterns: ["http://*/*", "https://*/*"],
         contexts: ['page'],
@@ -425,7 +428,7 @@ function setUpContextMenus() {
     });
 
     chrome.contextMenus.create({
-        title: "添加至临时列表",
+        title: show_message_from_locales("contextMenusAddingToTempTable"),
         id: "temp",
         documentUrlPatterns: ["http://*/*", "https://*/*"],
         contexts: ['page'],

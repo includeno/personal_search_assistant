@@ -53,6 +53,10 @@
           {{optionsConfirmButton}}
         </a-button>
       </tr>
+
+      <tr >
+        {{addToTempTableKey}}
+      </tr>
     </table>
 
 
@@ -91,6 +95,9 @@ export default {
     },
     optionsResetAllButton(){
       return browser.i18n.getMessage('optionsResetAllButton');
+    },
+    addToTempTableKey(){
+      return browser.i18n.getMessage('addToTempTableKey');
     }
   },
   mounted() {

@@ -15,9 +15,8 @@
     "gcm"
   ],
   "icons": {
-    "16": "icons/16.png",
-    "48": "icons/48.png",
-    "128": "icons/128.png"
+    "48": "icons/psa_48.png",
+    "128": "icons/psa_128.png"
   },
   "background": {
     "scripts": [
@@ -42,8 +41,7 @@
     "default_popup": "popup.html",
     "default_title": "__MSG_extName__",
     "default_icon": {
-      "19": "icons/19.png",
-      "38": "icons/38.png"
+      "38": "icons/psa_38.png"
     }
   },
   "options_ui": {
