@@ -1,0 +1,49 @@
+# https://docs.github.com/en/actions/guides
+# CI name , it will display on github's action page menu
+name: Build KillSystem Images
+# trigger on which this CI should be run
+on: # push operation is operate
+  push:
+    # here since my repository branch is named `main` , you should follow your own repository like `master`
+    branches: [main,dev]
+# CI enviroment settings
+env:
+  STATE_RELEASE_VERSION: "1.0.1" # version
+  TAG_NAME: "killsystem" #tag 只能小写开头
+jobs:
+  build:
+    name: build docker image
+    runs-on: ubuntu-latest # use latest ubuntu to run the job
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - run: npm install
+      - run: npm run build
+      
+      - name: Show Files
+        run: ls -a
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ env.STATE_RELEASE_VERSION }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            Changes in this Release
+            - First Change
+            - Second Change
+          draft: false
+          prerelease: false
+      #https://github.com/8398a7/action-slack
+#      - name: Slack Nofitication
+#        uses: 8398a7/action-slack@v3
+#        with:
+#          status: ${{ job.status }}
+#          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took # selectable (default: repo,message)
+#        env:
+#          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+#        if: always() # Pick up events even if the job fails or is canceled.
