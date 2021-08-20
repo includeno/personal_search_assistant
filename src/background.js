@@ -8,8 +8,8 @@ function get_now_time() {
 }
 
 chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+    //监听打开新网页时候 网页的状态
     if (request.message == "check_url") {
-
         let record =await select_record(urlTableName,request.url);
         if(record==null){
             console.log("无记录");
@@ -21,7 +21,23 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
                     icon: 'http://images0.cnblogs.com/news_topic/firefox.gif',
                 });
         }
-
+    }
+    else if (request.message == "config_write") {
+        let config =await update_record(configTableName,{
+            name:request.name,
+            showFloatTitle:request.showFloatTitle,
+            floatTitleValid:request.floatTitleValid,
+            floatTitleInValid:request.floatTitleInValid,
+            autoCleaningTempTable:request.autoCleaningTempTable,
+        });
+        sendResponse(config);
+        if(config==null){
+            console.log("无config记录");
+        }
+    }
+    else if (request.message == "config_read") {
+        let config =await select_record(configTableName,request.name);
+        sendResponse(config);
     }
 });
 
@@ -38,7 +54,7 @@ chrome.runtime.onMessage.addListener((request,sender,sendResponse)=>{
                 message:"url_insert_success",
                 record:res,
             });
-        })
+        });
 
     }
     else if(request.message=="url_select"){
@@ -152,6 +168,7 @@ var db = null;
 const dbName="Personal_Search_Assistant";
 const urlTableName="urltable";//保存被无效的网页列表
 const tempTableName="temptable";//保存临时列表
+const configTableName="configtable";//保存临时列表
 
 //表结构 url time
 function create_database() {
@@ -165,20 +182,28 @@ function create_database() {
         let url_objectStore = db.createObjectStore(urlTableName, {
             keyPath: 'url'
         });
-
-        let temp_objectStore = db.createObjectStore(tempTableName, {
-            keyPath: 'url'
-        });
         //建立url列的唯一索引 确保没有重复url
         url_objectStore.createIndex("url", "url", { unique: true });
         url_objectStore.transaction.oncomplete = function (event) {
             console.log("URL ObjectStore Created.");
         }
 
+        let temp_objectStore = db.createObjectStore(tempTableName, {
+            keyPath: 'url'
+        });
         //建立url列的唯一索引 确保没有重复url
         temp_objectStore.createIndex("url", "url", { unique: true });
         temp_objectStore.transaction.oncomplete = function (event) {
             console.log("Temp ObjectStore Created.");
+        }
+
+        let config_objectStore = db.createObjectStore(configTableName, {
+            keyPath: 'name'
+        });
+        //建立url列的唯一索引 确保没有重复url
+        config_objectStore.createIndex("name", "name", { unique: true });
+        config_objectStore.transaction.oncomplete = function (event) {
+            console.log("Config ObjectStore Created.");
         }
     }
     request.onsuccess = function (event) {

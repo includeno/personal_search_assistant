@@ -1,6 +1,8 @@
 <template>
   <div class="container">
     <table class="tablestyle">
+      <br>
+
       <tr class="table_tr_style">
         <a-label>Show Float Title On Tabs </a-label>
         <a-input v-model="showFloatTitle" style="width: 300px"></a-input>
@@ -40,14 +42,19 @@
       </a-button>
       </tr>
 
+      <br>
+
+      <tr>
+        <a-button type="primary" v-on:click="init()">
+          Reset All
+        </a-button>
+        &nbsp;
+        <a-button type="primary" v-on:click="config_write()">
+          Confirm
+        </a-button>
+      </tr>
     </table>
-    <a-button type="primary" v-on:click="init()">
-      Reset All
-    </a-button>
-    &nbsp;
-    <a-button type="primary" v-on:click="submit()">
-      Confirm
-    </a-button>
+
 
   </div>
 </template>
@@ -57,16 +64,14 @@ export default {
   name: "Options",
   data(){
     return{
-      showFloatTitle:"1",//开关显示浮动图标
+      showFloatTitle:"",//开关显示浮动图标
       floatTitleValid:"",//浮动图标内文字 开
       floatTitleInValid:"",//浮动图标内文字 关
-      autoCleaningTempTable:"1",//自动清理前一天的临时列表内容
-
-      //
+      autoCleaningTempTable:"",//自动清理前一天的临时列表内容
     }
   },
   mounted() {
-    this.init();
+    this.config_read();
   },
   methods:{
     init(){
@@ -74,6 +79,8 @@ export default {
       this.init_floatTitleValid();
       this.init_floatTitleInValid();
       this.init_autoCleaningTempTable();
+
+      this.config_write();
     },
 
     init_showFloatTitle(){
@@ -88,9 +95,33 @@ export default {
     init_autoCleaningTempTable(){
       this.autoCleaningTempTable="1";
     },
-    submit(){
+    config_write(){
+      var that=this;
       chrome.runtime.sendMessage({
-        message:"temp_delete_all",
+        message:"config_write",
+        name:"config",
+        showFloatTitle:that.showFloatTitle,
+        floatTitleValid:that.floatTitleValid,
+        floatTitleInValid:that.floatTitleInValid,
+        autoCleaningTempTable:that.autoCleaningTempTable,
+      });
+    },
+    config_read(){
+      var that=this;
+      chrome.runtime.sendMessage({
+        message:"config_read",
+        name:"config"
+      },function (response) {
+        if(response!=null){
+          that.showFloatTitle=response.showFloatTitle;
+          that.floatTitleValid=response.floatTitleValid;
+          that.floatTitleInValid=response.floatTitleInValid;
+          that.autoCleaningTempTable=response.autoCleaningTempTable;
+        }
+        else{
+          that.init();
+        }
+
       });
     }
   }

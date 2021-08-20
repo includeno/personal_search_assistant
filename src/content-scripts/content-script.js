@@ -1,5 +1,9 @@
 console.log('Hello from the content-script')
 let box = null;//定义注入的控件
+let showFloatTitle=""
+let floatTitleValid=""
+let floatTitleInValid=""
+let autoCleaningTempTable=""
 
 function checkNotification() {
     if (!("Notification" in window)) {
@@ -22,15 +26,29 @@ chrome.runtime.sendMessage({
     message:"check_url",
     url:window.location.href
 });
+async function config_read(){
+    let config_read=await chrome.runtime.sendMessage({
+        message:"config_read",
+        name:"config"
+    },function (response) {
+        if(response!=null){
+            showFloatTitle=response.showFloatTitle;
+            floatTitleValid=response.floatTitleValid;
+            floatTitleInValid=response.floatTitleInValid;
+            autoCleaningTempTable=response.autoCleaningTempTable;
+        }
+    });
+}
 
 function elementpos(event) {
+    console.log(config_read!=null);
     var dragtarget = document.getElementById('dragtarget');
-    if (dragtarget != null) {
+    if (dragtarget != null&&showFloatTitle=="1") {
         if (currentelement != null && currentelement != '') {
-            dragtarget.innerHTML='🐵';
+            dragtarget.innerHTML=floatTitleValid;
         }
         else {
-            dragtarget.innerHTML='🙈';
+            dragtarget.innerHTML=floatTitleInValid;
         }
 
     }
@@ -103,9 +121,9 @@ function addListenerOfTag() {
         linkTags[i].onmouseout = tag_a_event_out;
     }
 }
-window.onload = function () {
+window.onload =async function () {
     box = document.createElement('div');
-    box.innerHTML = '<p draggable="true" id="dragtarget" color="green">🐵</p>';
+    box.innerHTML = '<p draggable="true" id="dragtarget" color="green"></p>';
     box.id = 'mybox';
 
     box.draggable = "true";
@@ -180,6 +198,7 @@ window.onload = function () {
 
     };
     addListenerOfTag();
+    await config_read();
     document.onmouseover = elementpos;
 
     //https://segmentfault.com/q/1010000009637450  https://developer.mozilla.org/zh-CN/docs/Web/API/MutationObserver
