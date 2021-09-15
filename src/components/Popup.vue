@@ -8,22 +8,29 @@
       <br>
 
       <div ref="hello" id="requestform">
-        <table v-bind:style="{width : 600+'px' }"  align="left">
+        <table v-bind:style="{width : 1000+'px' }"  align="left">
           <tr>
             <td v-bind:style="{width : 150+'px' }">{{time}}</td>
             <td v-bind:style="{width : 400+'px' }">{{link}}</td>
+            <td v-bind:style="{width : 100+'px' }">{{operation}}</td>
+            <td v-bind:style="{width : 100+'px' }">{{note}}</td>
           </tr>
 
           <tr v-for="(item, index) in tempList" :key="index">
             <td v-bind:style="{width : 150+'px' }">
               {{item.time}}
             </td>
-            <td v-bind:style="{width : 280+'px' }">
+            <td v-bind:style="{width : 400+'px' }">
               <a href="item.url" v-on:click="opennewtab(item.url)">{{show_standard_url(item.url)}}</a>
             </td>
-            <td v-bind:style="{width : 150+'px' }">
+            <td v-bind:style="{width : 100+'px' }">
+              <button v-on:click="copyURL(item)" >复制URL</button>
               <button v-on:click="deletetemplistitem(index)">删除记录</button>
             </td>
+            <td v-bind:style="{width : 200+'px' }">
+              <input v-model="item.note" v-on:change="saveNote(item)"  type="text">
+            </td>
+
             <!-- 多选框参考 https://www.cnblogs.com/li-sir/p/11445559.html -->
 
           </tr>
@@ -35,6 +42,9 @@
 </template>
 
 <script>
+import Clipboard from 'clipboard';
+
+
 export default {
   name: 'Popup',
   data() {
@@ -60,6 +70,12 @@ export default {
     link(){
       return browser.i18n.getMessage('link');
     },
+    operation(){
+      return browser.i18n.getMessage('operation');
+    },
+    note(){
+      return browser.i18n.getMessage('note');
+    },
 
 
     defaultText () {
@@ -80,7 +96,7 @@ export default {
         that.templist=[];
         if(response!=null){
           for (let i = 0; i < response.length; i++) {
-            that.templist.push({url:response[i].url,time:response[i].time});
+            that.templist.push({url:response[i].url,time:response[i].time,note:response[i].note});
           }
         }
         else{
@@ -121,6 +137,38 @@ export default {
         return url.substring(0,54)+"......"
       }
     },
+    //复制url到剪切板
+    copyURL:function (item){
+      let url=item.url;
+      console.log("print url:"+url);
+      const clipboard = new Clipboard("#requestform", {
+        // 点击copy按钮，直接通过text直接返回复印的内容
+        text: () => new String(url),
+      });
+      // 通过传递DOM选择器，HTML元素或HTML元素列表实例化
+      clipboard.on('success', (e) => {
+        this.$message.success(`复制成功，内容为：${e.text}`);
+        e.clearSelection();
+        // 释放内存
+        clipboard.destroy();
+      });
+      clipboard.on('error', () => {
+        // 不支持复制
+        this.$message.error('该浏览器不支持自动复制');
+        // 释放内存
+        clipboard.destroy();
+      })
+    },
+    saveNote:function (item){
+      console.log("saveNote item:"+JSON.stringify(item));
+      chrome.runtime.sendMessage({
+        message:"temp_update",
+        url:item.url,
+        time:item.time,
+        note:item.note
+      });
+      this.select_all();
+    }
   },
 }
 </script>

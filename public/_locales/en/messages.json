@@ -19,6 +19,14 @@
     "message": "Link",
     "description": ""
   },
+  "operation": {
+    "message": "Operation",
+    "description": ""
+  },
+  "note": {
+    "message": "Note",
+    "description": ""
+  },
   "optionsTitleShowFloatTitle": {
     "message": "Show Float Title On Tabs ",
     "description": ""

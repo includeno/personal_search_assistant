@@ -66,7 +66,7 @@ chrome.runtime.onMessage.addListener((request,sender,sendResponse)=>{
         })
     }
     else if(request.message=="url_update"){
-        let record=update_record(urlTableName,request.url);
+        let record=update_record(urlTableName,request);
         record.then(res=>{
             chrome.runtime.sendMessage({
                 message:"url_update_success",
@@ -91,7 +91,8 @@ chrome.runtime.onMessage.addListener( (request,sender,sendResponse)=>{
     if(request.message=="temp_insert"){
         let record=insert_record(tempTableName,{
             url:request.url,
-            time: get_now_time()
+            time: get_now_time(),
+            note:""
         });
 
         record.then(res=>{
@@ -125,15 +126,13 @@ chrome.runtime.onMessage.addListener( (request,sender,sendResponse)=>{
         })
     }
     else if(request.message=="temp_update"){
-        let record=update_record(tempTableName,request.url);
+        let record =update_record(tempTableName,{
+            url:request.url,
+            note:request.note,
+            time:request.time,
+        });
+        sendResponse(record);
 
-        record.then(res=>{
-            chrome.runtime.sendMessage({
-                message:"temp_update_success",
-                record:res,
-            });
-            sendResponse(res);
-        })
     }
     else if(request.message=="temp_delete"){
         let record=delete_record(tempTableName,request.url);
@@ -166,7 +165,7 @@ var db = null;
 const dbName="Personal_Search_Assistant";
 const urlTableName="urltable";//保存被无效的网页列表
 const tempTableName="temptable";//保存临时列表
-const configTableName="configtable";//保存临时列表
+const configTableName="configtable";//保存配置信息
 
 //表结构 url time
 function create_database() {
@@ -308,7 +307,9 @@ function select_all_records(tableName) {
 }
 
 function update_record(tableName,record) {
+
     if (db) {
+        console.log("update_record: request:"+JSON.stringify(record));
         const put_transaction = db.transaction(tableName, "readwrite");
         const objectStore = put_transaction.objectStore(tableName);
         return new Promise((resolve, reject) => {
