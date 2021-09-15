@@ -5,7 +5,7 @@ name: Release
 on: # push operation is operate
   push:
     # here since my repository branch is named `main` , you should follow your own repository like `master`
-    branches: [main]
+    branches: [dev]
 # CI enviroment settings
 env:
   #STATE_RELEASE_VERSION: "1.0.1" # version
@@ -43,8 +43,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: main_${{ env.STATE_RELEASE_VERSION }}_${{ github.sha }}
-          release_name: GA Release version:${{ env.STATE_RELEASE_VERSION }} date:${{ env.BUILD_DATE}} sha:${{ github.sha }}
+          tag_name: dev_${{ env.STATE_RELEASE_VERSION }}_${{ github.sha }}
+          release_name: Release branch:${{ github.ref }} version:${{ env.STATE_RELEASE_VERSION }} date:${{ env.BUILD_DATE}} sha:${{ github.sha }}
           body: |
             Changes in this Release
             - First Change
