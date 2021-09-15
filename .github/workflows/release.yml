@@ -29,18 +29,22 @@ jobs:
         run: ls -a
       - name: From Version.log to GITHUB_ENV
         run: tail ./Version.log >> $GITHUB_ENV
+      # https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions
       - name: Show ENV
-        run: echo ${{ github.GITHUB_SHA }}
-          echo ${{ env.GITHUB_SHA }}
+        run:
           echo ${{ github.sha }}
+          echo ${{ github.ref }}
+          echo ${{ github.job }}
+          echo ${{ github.job }}
+          echo ${{ github.action }}
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{ env.STATE_RELEASE_VERSION }}_${{ env.BUILD_DATE }}_${{ github.sha }}
-          release_name: Release date:${{ env.BUILD_DATE}} v:${{ env.STATE_RELEASE_VERSION }} sha:${{ github.sha }}
+          tag_name: ${{ github.ref }}${{ env.STATE_RELEASE_VERSION }}_${{ github.sha }}
+          release_name: Release branch:${{ github.ref }} version:${{ env.STATE_RELEASE_VERSION }} date:${{ env.BUILD_DATE}} sha:${{ github.sha }}
           body: |
             Changes in this Release
             - First Change
