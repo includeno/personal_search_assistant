@@ -43,6 +43,10 @@
     "message": "Auto Clean Previous Records In Temporary Table When Starting A New Day ",
     "description": ""
   },
+  "optionsShowURLPreview":{
+    "message": "Show URL Preview in Popup",
+    "description": ""
+  },
   "optionsResetButton": {
     "message": "Reset",
     "description": ""

@@ -22,6 +22,7 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
                     body: show_message_from_locales('notificationExistInURLTable'),
                     icon: 'http://images0.cnblogs.com/news_topic/firefox.gif',
                 });
+
         }
     }
     else if (request.message == "config_write") {
@@ -31,6 +32,7 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
             floatTitleValid:request.floatTitleValid,
             floatTitleInValid:request.floatTitleInValid,
             autoCleaningTempTable:request.autoCleaningTempTable,
+            showURLPreview:request.showURLPreview,
         });
         sendResponse(config);
     }
@@ -212,7 +214,8 @@ function create_database() {
             showFloatTitle:"1",
             floatTitleValid:"🐵",
             floatTitleInValid:"🙈",
-            autoCleaningTempTable:"1",
+            autoCleaningTempTable:"0",
+            showURLPreview: "0",
         });
 
         db.onerror = function (event) {

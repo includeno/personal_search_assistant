@@ -55,6 +55,23 @@
 
       <br>
 
+      <tr class="table_tr_style">
+        <a-label>{{optionsShowURLPreview}}</a-label>
+        <a-select v-model="showURLPreview" style="width: 300px">
+          <a-select-option value="1" selected>
+            开/On
+          </a-select-option>
+          <a-select-option value="0">
+            关/Off
+          </a-select-option>
+        </a-select>
+        <a-button type="primary" v-on:click="init_showURLPreview()">
+          {{optionsResetButton}}
+        </a-button>
+      </tr>
+
+      <br>
+
       <tr>
         <a-button type="primary" v-on:click="init()">
           {{optionsResetAllButton}}
@@ -82,7 +99,8 @@ export default {
       showFloatTitle:"",//开关显示浮动图标
       floatTitleValid:"",//浮动图标内文字 开
       floatTitleInValid:"",//浮动图标内文字 关
-      autoCleaningTempTable:"",//自动清理前一天的临时列表内容
+      autoCleaningTempTable:"",//自动清理前2天的临时列表内容
+      showURLPreview:"0",//显示链接的预览 1开启 0关闭 默认关闭
 
       exampleFloatTitleValid:`Example:<h1>🐵</h1>,🐵 and so on`
     }
@@ -99,6 +117,9 @@ export default {
     },
     optionsTitleAutoCleaningTempTable(){
       return browser.i18n.getMessage('optionsTitleAutoCleaningTempTable');
+    },
+    optionsShowURLPreview(){
+      return browser.i18n.getMessage('optionsShowURLPreview');
     },
     optionsResetButton(){
       return browser.i18n.getMessage('optionsResetButton');
@@ -122,6 +143,7 @@ export default {
       this.init_floatTitleValid();
       this.init_floatTitleInValid();
       this.init_autoCleaningTempTable();
+      this.init_showURLPreview();
 
       this.config_write();
     },
@@ -138,6 +160,9 @@ export default {
     init_autoCleaningTempTable(){
       this.autoCleaningTempTable="1";
     },
+    init_showURLPreview(){
+      this.showURLPreview="0";
+    },
     config_write(){
       var that=this;
       chrome.runtime.sendMessage({
@@ -147,6 +172,7 @@ export default {
         floatTitleValid:that.floatTitleValid,
         floatTitleInValid:that.floatTitleInValid,
         autoCleaningTempTable:that.autoCleaningTempTable,
+        showURLPreview:that.showURLPreview,
       });
     },
     config_read(){
@@ -160,6 +186,7 @@ export default {
           that.floatTitleValid=response.floatTitleValid;
           that.floatTitleInValid=response.floatTitleInValid;
           that.autoCleaningTempTable=response.autoCleaningTempTable;
+          that.showURLPreview=response.showURLPreview
         }
         else{
           that.init();

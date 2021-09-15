@@ -43,6 +43,10 @@
     "message": "每天自动清理临时列表 ",
     "description": ""
   },
+  "optionsShowURLPreview":{
+    "message": "临时列表页面显示链接预览",
+    "description": ""
+  },
   "optionsResetButton": {
     "message": "重置",
     "description": ""
@@ -56,7 +60,7 @@
     "description": ""
   },
   "addToTempTableKey": {
-    "message": "添加网页内链接 快捷键:~ 可以对网页内游标进行拖动，使其固定在网页左边或者右边",
+    "message": "添加网页内链接 快捷键:~   除此之外可以对网页内游标进行拖动，使其固定在网页左边或者右边",
     "description": ""
   },
 
