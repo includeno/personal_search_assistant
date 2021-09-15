@@ -12,7 +12,7 @@ env:
   TAG_NAME: "personal search assistant" #tag 只能小写开头
 jobs:
   build:
-    name: Github Action Release
+    name: Main Release
     runs-on: ubuntu-latest # use latest ubuntu to run the job
     steps:
       - uses: actions/checkout@v2
@@ -43,8 +43,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: main_${{ env.STATE_RELEASE_VERSION }}_${{ github.sha }}
-          release_name: GA Release version:${{ env.STATE_RELEASE_VERSION }} date:${{ env.BUILD_DATE}} sha:${{ github.sha }}
+          tag_name: ${{ env.STATE_RELEASE_VERSION }}_main_${{ github.sha }}
+          release_name: GA Main Release version:${{ env.STATE_RELEASE_VERSION }} date:${{ env.BUILD_DATE}} sha:${{ github.sha }}
           body: |
             Changes in this Release
             - First Change
