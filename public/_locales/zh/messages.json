@@ -19,6 +19,14 @@
     "message": "链接",
     "description": ""
   },
+  "operation": {
+    "message": "操作",
+    "description": ""
+  },
+  "note": {
+    "message": "笔记",
+    "description": ""
+  },
   "optionsTitleShowFloatTitle": {
     "message": "网页中显示游标 ",
     "description": ""

@@ -38,7 +38,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
           tag_name: ${{ env.STATE_RELEASE_VERSION }}
-          release_name: Release ${{ env.BUILD_DATE}}
+          release_name: Release ${{ env.BUILD_DATE}}${{ env.STATE_RELEASE_VERSION }}
           body: |
             Changes in this Release
             - First Change

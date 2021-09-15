@@ -1,6 +1,6 @@
 {
   "name": "personal_search_assistant",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service build --mode development --watch",
@@ -10,6 +10,7 @@
   "dependencies": {
     "ant-design-vue": "^1.7.7",
     "axios": "^0.20.0",
+    "clipboard": "^2.0.8",
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
