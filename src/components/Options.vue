@@ -158,7 +158,7 @@ export default {
       this.floatTitleInValid="🙈";
     },
     init_autoCleaningTempTable(){
-      this.autoCleaningTempTable="1";
+      this.autoCleaningTempTable="0";
     },
     init_showURLPreview(){
       this.showURLPreview="0";
