@@ -45,7 +45,7 @@ function get_now_time() {
 function show_message_from_locales(key){
     return browser.i18n.getMessage(key);
 }
-
+//使用browser.tabs https://stackoverflow.com/questions/1891738/how-to-modify-current-url-location-in-chrome-via-extensions
 async function getCurrentTab() {
     let queryOptions = { active: true, currentWindow: true };
     let [tab] = await browser.tabs.query(queryOptions);
@@ -105,7 +105,7 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
                 //配置发生变动时
                 if(lastTimesConfig.timesAfterRestrict!=config.timesAfterRestrict){
                     lastTimesConfig=config;
-                    queue=new Queue(lastTimesConfig+1);
+                    queue=new Queue(lastTimesConfig.timesAfterRestrict+1);
                 }
             }
             else{
