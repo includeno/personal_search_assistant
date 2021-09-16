@@ -7,8 +7,16 @@
     "message": "今天的临时列表",
     "description": ""
   },
-  "popupclearButton": {
+  "popupClearButton": {
     "message": "清空",
+    "description": ""
+  },
+  "popupImportButton": {
+    "message": "导入数据",
+    "description": ""
+  },
+  "popupExportButton": {
+    "message": "导出数据",
     "description": ""
   },
   "time": {

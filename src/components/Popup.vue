@@ -1,20 +1,35 @@
 <template>
-  <div>
+  <div class="mainpage">
     <div>
       <h3>{{title}}
-        <a-button v-on:click="deletetemplist">{{clearButton}}</a-button>
       </h3>
+      <div>
+        <a-button v-on:click="deleteTemplist">{{clearButton}}</a-button>
+        <a-divider type="vertical" />
 
-      <h3>
-        <a-input v-bind:style="{width : 70+'%' }" v-model="manul"></a-input>
-        <a-button v-on:click="addtemplistitem">手动添加链接</a-button>
-      </h3>
+        <a-button v-on:click="exportData()"><a-icon type="download" /> {{exportButton}} </a-button>
+<!--        https://www.antdv.com/components/divider-cn/-->
+        <a-divider type="vertical" />
 
-      <br>
+        <a-upload
+            name="file"
+            :fileList="fileList"
+            :beforeUpload="beforeUpload"
+        >
+          <a-button> <a-icon type="upload" /> {{importButton}} </a-button>
+        </a-upload>
+        <h3>
+          <a-input v-bind:style="{width : 70+'%' }" v-model="manul"></a-input>
+          <a-divider type="vertical" />
+          <a-button v-on:click="addTemplistItem">手动添加链接</a-button>
+        </h3>
+      </div>
+
+
 
       <div ref="hello" id="requestform">
         <table class="temptable" align="left" border="1">
-          <tr>
+          <tr v-show="tempList.length!=0">
             <td v-bind:style="{width : 12+'%' }">{{time}}</td>
             <td >{{link}}</td>
             <td v-bind:style="{width : 10+'%' }">{{operation}}&{{note}}</td>
@@ -25,7 +40,7 @@
               {{item.time}}
             </td>
             <td >
-              <a href="item.url" v-on:click="opennewtab(item.url)">{{show_standard_url(item.url)}}</a>
+              <a href="item.url" v-on:click="openNewTab(item.url)">{{show_standard_url(item.url)}}</a>
               <div v-show="showURLPreview==1">
                 <img :src="item.favicons">
                 <label>{{item.title}}{{item.description}}</label>
@@ -35,12 +50,11 @@
 
             <td v-bind:style="{width : 35+'%' }">
               <a-button v-on:click="copyURL(item)" >复制URL</a-button>
-              <a-button v-on:click="deletetemplistitem(index)">删除记录</a-button>
+              <a-button v-on:click="deleteTemplistItem(index)">删除记录</a-button>
               <br>
               {{note}}:
               <a-input v-bind:style="{width : 95+'%' }" v-model="item.note" v-on:change="saveNote(item)"  type="text"></a-input>
             </td>
-
             <!-- 多选框参考 https://www.cnblogs.com/li-sir/p/11445559.html -->
 
           </tr>
@@ -65,6 +79,8 @@ export default {
       templist2: [],
       autoCleaningTempTable:"0",
       showURLPreview:"0",
+
+      fileList:[],//文件列表
     }
   },
   async mounted () {
@@ -77,7 +93,13 @@ export default {
       return browser.i18n.getMessage('popupTitle');
     },
     clearButton () {
-      return browser.i18n.getMessage('popupclearButton');
+      return browser.i18n.getMessage('popupClearButton');
+    },
+    importButton () {
+      return browser.i18n.getMessage('popupImportButton');
+    },
+    exportButton () {
+      return browser.i18n.getMessage('popupExportButton');
     },
     time(){
       return browser.i18n.getMessage('time');
@@ -101,6 +123,7 @@ export default {
     }
   },
   methods: {
+    //读取配置
     async read_config(){
       var that = this;
       let config_read=await chrome.runtime.sendMessage({
@@ -125,7 +148,6 @@ export default {
         that.templist = [];
 
         const zero = new Date(new Date(new Date().toLocaleDateString()).getTime());//当天时间0点
-
         if (response != null) {
           let temp=[]
           for (let i = 0; i < response.length; i++) {
@@ -164,17 +186,14 @@ export default {
       });
     },
 
-    gettemplist:async function () {
-      await this.select_all();
-    },
-    deletetemplist:async function () {
+    deleteTemplist:async function () {
       await chrome.runtime.sendMessage({
         message:"temp_delete_all",
       });
       this.templist=[];
 
     },
-    deletetemplistitem:async function(index){
+    deleteTemplistItem:async function(index){
       let keyurl=this.templist[index].url;
       chrome.runtime.sendMessage({
         message:"temp_delete",
@@ -182,12 +201,12 @@ export default {
       });
       this.select_all();
     },
-    opennewtab: function (url) {
+    openNewTab(url) {
       chrome.tabs.create({ url: url }, function (tab) {
       });
 
     },
-    show_standard_url: function (url) {
+    show_standard_url(url) {
       if (url.length<=60) {
         return url;
       }
@@ -196,7 +215,7 @@ export default {
       }
     },
     //复制url到剪切板
-    copyURL:function (item){
+    copyURL(item){
       let url=item.url;
       console.log("print url:"+url);
       const clipboard = new Clipboard("#requestform", {
@@ -224,13 +243,12 @@ export default {
         time:item.time,
         note:item.note
       });
-      this.select_all();
     },
     getPreview:async function (url){
       let response=await getLinkPreview(url);
       return response;
     },
-    async addtemplistitem(){
+    async addTemplistItem(){
       let url=this.manul;
       if(String(url).startsWith("http")||String(url).startsWith("https")){
         await chrome.runtime.sendMessage({
@@ -244,12 +262,69 @@ export default {
         alert("No URL exists!");
       }
     },
+    //upload参考  https://www.antdv.com/components/upload-cn/
+    beforeUpload(file){
+      var that=this;
 
+      //只读取json文件
+      if(file.type === 'application/json'){
+        var reader = new FileReader();
+        //将文件以文本形式读入页面
+        reader.readAsText(file);
+        reader.onload=async (result)=>{
+          let array=JSON.parse((reader.result));
+          for(let i=0;i<array.length;i++){
+
+            let url=array[i].url;
+            let note=array[i].note;
+            let time=array[i].time;
+            console.log("array[i]:"+JSON.stringify(array[i]));
+            if(String(url).startsWith("http")||String(url).startsWith("https")){
+              chrome.runtime.sendMessage({
+                message:"temp_insert",
+                url:url,
+                note:note,
+                time:time
+              });
+
+            }
+          }
+          that.fileList=[]
+          that.select_all();
+          return true;
+        }
+      }
+      else{
+        alert("file not exist!");
+        return false;
+      }
+    },
+
+
+    //文件下载 https://stackoverflow.com/questions/27120757/failed-to-execute-createobjecturl-on-url
+    exportData(){
+      let array=[];
+      for(let i=0;i<this.templist.length;i++){
+        array.push({url: this.templist[i].url, time: this.templist[i].time, note: this.templist[i].note});
+      }
+      let url=window.URL.createObjectURL(new Blob([JSON.stringify(array)], {type: "application/json"}))
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'data.json';
+      a.click();
+
+      window.URL.revokeObjectURL(url);
+      document.removeChild(a);
+    },
   },
 }
 </script>
 
 <style scoped>
+.mainpage{
+  height: auto;
+  align-content: center;
+}
 p {
   font-size: 20px;
 }

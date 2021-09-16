@@ -7,8 +7,16 @@
     "message": "Today's Temporary Table",
     "description": ""
   },
-  "popupclearButton": {
-    "message": "Clear Temporary Table",
+  "popupClearButton": {
+    "message": "Clear All Data",
+    "description": ""
+  },
+  "popupImportButton": {
+    "message": "Import Data From file",
+    "description": ""
+  },
+  "popupExportButton": {
+    "message": "Export Data to file",
     "description": ""
   },
   "time": {

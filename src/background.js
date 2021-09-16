@@ -91,10 +91,16 @@ chrome.runtime.onMessage.addListener((request,sender,sendResponse)=>{
 chrome.runtime.onMessage.addListener( (request,sender,sendResponse)=>{
 
     if(request.message=="temp_insert"){
+        if(request.note==null){
+            request.note="";
+        }
+        if(request.time==null){
+            request.time=get_now_time();
+        }
         let record=insert_record(tempTableName,{
             url:request.url,
-            time: get_now_time(),
-            note:""
+            time: request.time,
+            note:request.note
         });
 
         record.then(res=>{
