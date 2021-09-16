@@ -72,6 +72,43 @@
 
       <br>
 
+      <tr class="table_tr_style">
+        <a-label>{{optionsTimesAfterRestrict}}</a-label>
+        <a-select v-model="timesAfterRestrict" style="width: 300px">
+          <a-select-option value=0>
+            0
+          </a-select-option>
+          <a-select-option value=1 selected>
+            1
+          </a-select-option>
+          <a-select-option value=2>
+            2
+          </a-select-option>
+          <a-select-option value=3>
+            3
+          </a-select-option>
+          <a-select-option value=4>
+            4
+          </a-select-option>
+
+        </a-select>
+        <a-button type="primary" v-on:click="init_timesAfterRestrict()">
+          {{optionsResetButton}}
+        </a-button>
+      </tr>
+
+      <br>
+
+      <tr class="table_tr_style">
+        <a-label>{{optionsRedirectLink}}</a-label>
+        <a-input v-model="redirectLink" style="width: 300px"></a-input>
+        <a-button type="primary" v-on:click="init_redirectLink()">
+          {{optionsResetButton}}
+        </a-button>
+      </tr>
+
+      <br>
+
       <tr>
         <a-button type="primary" v-on:click="init()">
           {{optionsResetAllButton}}
@@ -102,7 +139,10 @@ export default {
       autoCleaningTempTable:"",//自动清理前2天的临时列表内容
       showURLPreview:"0",//显示链接的预览 1开启 0关闭 默认关闭
 
-      exampleFloatTitleValid:`Example:<h1>🐵</h1>,🐵 and so on`
+      exampleFloatTitleValid:`Example:<h1>🐵</h1>,🐵 and so on`,
+
+      timesAfterRestrict:1,//当连续访问标记为无效的网页 xx 次数之后解除访问限制,此时可以标记该网页为有效
+      redirectLink:"https://www.baidu.com"
     }
   },
   computed:{
@@ -121,6 +161,14 @@ export default {
     optionsShowURLPreview(){
       return browser.i18n.getMessage('optionsShowURLPreview');
     },
+
+    optionsTimesAfterRestrict(){
+      return browser.i18n.getMessage('optionsTimesAfterRestrict');
+    },
+    optionsRedirectLink(){
+      return browser.i18n.getMessage('optionsRedirectLink');
+    },
+
     optionsResetButton(){
       return browser.i18n.getMessage('optionsResetButton');
     },
@@ -144,6 +192,8 @@ export default {
       this.init_floatTitleInValid();
       this.init_autoCleaningTempTable();
       this.init_showURLPreview();
+      this.init_timesAfterRestrict();
+      this.init_redirectLink();
 
       this.config_write();
     },
@@ -163,6 +213,13 @@ export default {
     init_showURLPreview(){
       this.showURLPreview="0";
     },
+    init_timesAfterRestrict(){
+      this.timesAfterRestrict=1;
+    },
+    init_redirectLink(){
+      this.redirectLink=browser.i18n.getMessage('defaultRedirectLink');
+    },
+
     config_write(){
       var that=this;
       chrome.runtime.sendMessage({
@@ -173,6 +230,8 @@ export default {
         floatTitleInValid:that.floatTitleInValid,
         autoCleaningTempTable:that.autoCleaningTempTable,
         showURLPreview:that.showURLPreview,
+        timesAfterRestrict:that.timesAfterRestrict,
+        redirectLink:that.redirectLink
       });
     },
     config_read(){
@@ -186,7 +245,9 @@ export default {
           that.floatTitleValid=response.floatTitleValid;
           that.floatTitleInValid=response.floatTitleInValid;
           that.autoCleaningTempTable=response.autoCleaningTempTable;
-          that.showURLPreview=response.showURLPreview
+          that.showURLPreview=response.showURLPreview;
+          that.timesAfterRestrict=response.timesAfterRestrict;
+          that.redirectLink=response.redirectLink;
         }
         else{
           that.init();

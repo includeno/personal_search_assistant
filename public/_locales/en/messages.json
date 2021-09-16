@@ -4,7 +4,7 @@
     "description": ""
   },
   "popupTitle": {
-    "message": "Today's Temporary Table",
+    "message": "Temporary Links Table",
     "description": ""
   },
   "popupClearButton": {
@@ -52,9 +52,22 @@
     "description": ""
   },
   "optionsShowURLPreview":{
-    "message": "Show URL Preview in Popup",
+    "message": "Show Link Preview in Popup",
     "description": ""
   },
+  "optionsTimesAfterRestrict":{
+    "message": "The times which the restricted link is accessed in a row",
+    "description": ""
+  },
+  "optionsRedirectLink":{
+    "message": "The URL to redirect when visiting restricted link",
+    "description": ""
+  },
+  "defaultRedirectLink":{
+    "message": "https://www.google.com",
+    "description": ""
+  },
+
   "optionsResetButton": {
     "message": "Reset",
     "description": ""
@@ -113,7 +126,7 @@
   },
 
   "contextMenusAddingToURLTable": {
-    "message": "Adding To URL Table(Forbidden)",
+    "message": "Adding To URL Table(Restrict)",
     "description": ""
   },
   "contextMenusRemoveFromURLTable": {

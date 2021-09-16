@@ -1,3 +1,38 @@
+
+class Queue{
+    constructor(size) {
+        this.count=0;
+        this.size=size;
+        this.array=[]
+    }
+    //Inserts the specified element into this queue if it is possible to do
+    add(element){
+        if(this.count==this.size){
+            return;
+        }
+        this.count=this.count+1;
+        this.array.push(element);
+    }
+    peek(){
+        if(this.count==0){
+            return null;
+        }
+        return this.array[this.array.length-1];
+    }
+    //Retrieves and removes the head of this queue, or returns null if this queue is empty.
+    poll(){
+        if(this.count==0){
+            return null;
+        }
+        this.array.splice(0,1);
+        this.count--;
+        return this.array[this.array.length-1];
+    }
+    isEmpty(){
+        return this.count==0;
+    }
+}
+
 //return current time
 function get_now_time() {
     var now = new Date(),
@@ -11,19 +46,83 @@ function show_message_from_locales(key){
     return browser.i18n.getMessage(key);
 }
 
+async function getCurrentTab() {
+    let queryOptions = { active: true, currentWindow: true };
+    let [tab] = await browser.tabs.query(queryOptions);
+    return tab;
+}
+
+//记录最近的访问
+var queue=null;
+var lastTimesConfig=null;
+
+async function restrict_link(request,times,redirectLink){
+    if(queue.count>=times+1){
+        queue.poll();
+    }
+    queue.add(request.url);
+
+    let count=0;
+    for(let i=0;i<queue.array.length;i++){
+        if(queue.array[i]==request.url){
+            count++;
+        }
+    }
+    console.log("访问次数:"+count);
+    //连续访问xx次才解除跳转
+    if(count<=times){
+        new Notification(
+            show_message_from_locales('messageLevelAttention'), {
+                body: show_message_from_locales('notificationExistInURLTable'),
+                icon: 'http://images0.cnblogs.com/news_topic/firefox.gif',
+            });
+
+        //查询当前打开的页面并跳转
+        let tab=await getCurrentTab();
+        chrome.tabs.query({currentWindow: true, active: true}, function (tab) {
+            chrome.tabs.update(tab.id, {url: redirectLink});
+        });
+    }
+    else{
+        new Notification(
+            show_message_from_locales('messageLevelAttention'), {
+                body: show_message_from_locales('notificationExistInURLTable'),
+                icon: 'http://images0.cnblogs.com/news_topic/firefox.gif',
+            });
+    }
+}
+
 //网页状态判断与配置读取
 chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
     //监听打开新网页时候 网页的状态
     if (request.message == "check_url") {
+        //查询链接是否已无效
         let record =await select_record(urlTableName,request.url);
         if(record!=null){
-            new Notification(
-                show_message_from_locales('messageLevelAttention'), {
-                    body: show_message_from_locales('notificationExistInURLTable'),
-                    icon: 'http://images0.cnblogs.com/news_topic/firefox.gif',
-                });
+            //读取配置
+            let config =await select_record(configTableName,"config");
+            if(null!=lastTimesConfig){
+                //配置发生变动时
+                if(lastTimesConfig.timesAfterRestrict!=config.timesAfterRestrict){
+                    lastTimesConfig=config;
+                    queue=new Queue(lastTimesConfig+1);
+                }
+            }
+            else{
+                //第一次访问,没有获取配置时
+                lastTimesConfig=config;
+                queue=new Queue(lastTimesConfig.timesAfterRestrict+1);
+            }
+            if(config.redirectLink!=request.url){
+                await restrict_link(request,lastTimesConfig.timesAfterRestrict,lastTimesConfig.redirectLink);
+            }
+            sendResponse(record);
 
         }
+    }
+    else if(request.message =="getCurrentTab"){
+        let cur=await getCurrentTab();
+        sendResponse(cur);
     }
     else if (request.message == "config_write") {
         let config =await update_record(configTableName,{
@@ -33,6 +132,8 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
             floatTitleInValid:request.floatTitleInValid,
             autoCleaningTempTable:request.autoCleaningTempTable,
             showURLPreview:request.showURLPreview,
+            timesAfterRestrict:request.timesAfterRestrict,
+            redirectLink:request.redirectLink,
         });
         sendResponse(config);
     }
@@ -118,7 +219,6 @@ chrome.runtime.onMessage.addListener( (request,sender,sendResponse)=>{
 
         records.then(res=>{
             sendResponse(res);
-            console.log("select_all_records sendResponse!"+res.length);
 
         })
     }
@@ -222,6 +322,8 @@ function create_database() {
             floatTitleInValid:"🙈",
             autoCleaningTempTable:"0",
             showURLPreview: "0",
+            timesAfterRestrict:1,
+            redirectLink:browser.i18n.getMessage('defaultRedirectLink')
         });
 
         db.onerror = function (event) {
@@ -318,7 +420,7 @@ function select_all_records(tableName) {
 function update_record(tableName,record) {
 
     if (db) {
-        console.log("update_record: request:"+JSON.stringify(record));
+        //console.log("update_record: request:"+JSON.stringify(record));
         const put_transaction = db.transaction(tableName, "readwrite");
         const objectStore = put_transaction.objectStore(tableName);
         return new Promise((resolve, reject) => {

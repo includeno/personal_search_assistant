@@ -55,6 +55,20 @@
     "message": "临时列表页面显示链接预览",
     "description": ""
   },
+  "optionsTimesAfterRestrict":{
+    "message": "访问标记为无效网页多少次之后解除限制",
+    "description": ""
+  },
+  "optionsRedirectLink":{
+    "message": "访问标记为无效网页之后跳转的网页链接",
+    "description": ""
+  },
+  "defaultRedirectLink":{
+    "message": "https://www.baidu.com",
+    "description": ""
+  },
+
+
   "optionsResetButton": {
     "message": "重置",
     "description": ""
